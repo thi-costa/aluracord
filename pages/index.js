@@ -35,7 +35,8 @@ export default function PaginaInicial() {
                     justifyContent: "center",
                     backgroundColor: appConfig.theme.colors.primary[500],
                     backgroundImage:
-                        "url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)",
+                        //"url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)",
+                        "url(https://wallpapers.com/images/high/classic-batman-logo-7d945brkjqdfw37h.jpg)",
                     backgroundRepeat: "no-repeat",
                     backgroundSize: "cover",
                     backgroundBlendMode: "multiply",
@@ -55,8 +56,8 @@ export default function PaginaInicial() {
                         borderRadius: "5px",
                         padding: "32px",
                         margin: "16px",
-                        boxShadow: "0 2px 10px 0 rgb(0 0 0 / 20%)",
-                        backgroundColor: appConfig.theme.colors.neutrals[700],
+                        boxShadow: "0 2px 10px 0 rgb(0 0 0 / 100%)",
+                        
                     }}
                 >
                     {/* Formulário */}
@@ -65,7 +66,7 @@ export default function PaginaInicial() {
                         onSubmit={function (eventsInfos) {
                             eventsInfos.preventDefault();
                             console.log("Alguém submeteu o form");
-                            router.push("/chat");
+                            router.push(`/chat?username=${username}`);
                         }}
                         styleSheet={{
                             display: "flex",
@@ -77,7 +78,7 @@ export default function PaginaInicial() {
                             marginBottom: "32px",
                         }}
                     >
-                        <Title tag="h2">Boas vindas de volta!</Title>
+                        <Title tag="h2">Boas vindas!</Title>
                         <Text
                             variant="body3"
                             styleSheet={{
