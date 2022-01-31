@@ -98,17 +98,17 @@ export default function PaginaInicial() {
                                 );
                                 const valor = event.target.value;
                                 setUsername(valor);
-                                const data = fetch(
-                                    `https://api.github.com/users/${valor}`
-                                )
-                                    .then((response) => response.json())
-                                    .then((data) => {
-                                        console.log(data);
-                                        const bio = data["bio"];
+                                fetch(`https://api.github.com/users/${valor}`)
+                                    .then(
+                                        async (response) =>
+                                            await response.json()
+                                    )
+                                    .then((jsonData) => {
+                                        console.log(jsonData);
+                                        const bio = jsonData["bio"];
                                         console.log(bio);
                                         setBio(bio);
                                     });
-                                
                             }}
                             textFieldColors={{
                                 neutral: {

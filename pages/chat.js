@@ -1,25 +1,52 @@
 import { Box, Text, TextField, Image, Button } from "@skynexui/components";
 import React from "react";
 import appConfig from "../config.json";
+import { createClient } from "@supabase/supabase-js";
+import securityConfig from "../security.json";
+
+// Keys e URLs do seu BD
+const SUPABASE_ANON_KEY = securityConfig.SUPABASE_ANON_KEY;
+const SUPABASE_URL = securityConfig.SUPABASE_URL;
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function ChatPage() {
     const [message, setMessage] = React.useState("");
     const [messagesList, setMessagesList] = React.useState([]);
 
+    React.useEffect(() => {
+        // Por padrão roda sempre que se atualiza
+        const supabaseData = supabaseClient
+            .from("messages")
+            .select("*")
+            .order('id', {ascending: false})
+            .then(({ data }) => {
+                console.log("Dados da consulta:", data);
+                setMessagesList(data);
+            });
+    }, []);
+
     function handleNewMessage(newMessage) {
         const message = {
-            id: messagesList.length + 1,
             from: "thi-costa",
             text: newMessage,
         };
-        setMessagesList([message, ...messagesList]);
+
+        supabaseClient
+            .from("messages")
+            .insert([message])
+            .then(({data}) => {
+                console.log("Creating message", data);
+                setMessagesList([
+                    data[0],
+                    ...messagesList
+                ])
+            });
         setMessage("");
-        console.log(messagesList);
     }
 
-    const deleteItem = (index) => {
+    /* const deleteItem = (index) => {
         this.setState("tours", [].concat(tours).splice(index, 1));
-    };
+    }; */
     return (
         <Box
             styleSheet={{
