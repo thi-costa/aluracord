@@ -1,45 +1,16 @@
 import { Box, Button, Text, TextField, Image } from "@skynexui/components";
+import React from "react";
+import { useRouter } from "next/router";
 import appConfig from "../config.json";
 
-function GlobalStyle() {
-    return (
-        <style global jsx>{`
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                list-style: none;
-            }
-            body {
-                font-family: "Open Sans", sans-serif;
-            }
-            /* App fit Height */
-            html,
-            body,
-            #__next {
-                min-height: 100vh;
-                display: flex;
-                flex: 1;
-            }
-            #__next {
-                flex: 1;
-            }
-            #__next > * {
-                flex: 1;
-            }
-            /* ./App fit Height */
-        `}</style>
-    );
-}
-
 function Title(props) {
-    const Tag = props.tag || 'h1';
+    const Tag = props.tag || "h1";
     return (
         <>
             <Tag>{props.children}</Tag>
             <style jsx>{`
                 ${Tag} {
-                    color: ${appConfig.theme.colors.neutrals['000']};
+                    color: ${appConfig.theme.colors.neutrals["000"]};
                     font-size: 24px;
                     font-weight: 600;
                 }
@@ -48,13 +19,15 @@ function Title(props) {
     );
 }
 
-
 export default function PaginaInicial() {
-    const username = "thi-costa";
+    const [username, setUsername] = React.useState("thi-costa");
+    const [bio, setBio] = React.useState(
+        "Civil engineer | System analysis and development student"
+    );
+    const router = useRouter();
 
     return (
         <>
-            <GlobalStyle />
             <Box
                 styleSheet={{
                     display: "flex",
@@ -62,7 +35,8 @@ export default function PaginaInicial() {
                     justifyContent: "center",
                     backgroundColor: appConfig.theme.colors.primary[500],
                     backgroundImage:
-                        "url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)",
+                        //"url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)",
+                        "url(https://wallpapers.com/images/high/classic-batman-logo-7d945brkjqdfw37h.jpg)",
                     backgroundRepeat: "no-repeat",
                     backgroundSize: "cover",
                     backgroundBlendMode: "multiply",
@@ -82,13 +56,18 @@ export default function PaginaInicial() {
                         borderRadius: "5px",
                         padding: "32px",
                         margin: "16px",
-                        boxShadow: "0 2px 10px 0 rgb(0 0 0 / 20%)",
-                        backgroundColor: appConfig.theme.colors.neutrals[700],
+                        boxShadow: "0 2px 10px 0 rgb(0 0 0 / 100%)",
+                        
                     }}
                 >
                     {/* Formulário */}
                     <Box
                         as="form"
+                        onSubmit={function (eventsInfos) {
+                            eventsInfos.preventDefault();
+                            console.log("Alguém submeteu o form");
+                            router.push(`/chat?username=${username}`);
+                        }}
                         styleSheet={{
                             display: "flex",
                             flexDirection: "column",
@@ -99,7 +78,7 @@ export default function PaginaInicial() {
                             marginBottom: "32px",
                         }}
                     >
-                        <Title tag="h2">Boas vindas de volta!</Title>
+                        <Title tag="h2">Boas vindas!</Title>
                         <Text
                             variant="body3"
                             styleSheet={{
@@ -112,6 +91,26 @@ export default function PaginaInicial() {
 
                         <TextField
                             fullWidth
+                            value={username}
+                            onChange={function (event) {
+                                console.log(
+                                    "usuário digitou",
+                                    event.target.value
+                                );
+                                const valor = event.target.value;
+                                setUsername(valor);
+                                fetch(`https://api.github.com/users/${valor}`)
+                                    .then(
+                                        async (response) =>
+                                            await response.json()
+                                    )
+                                    .then((jsonData) => {
+                                        console.log(jsonData);
+                                        const bio = jsonData["bio"];
+                                        console.log(bio);
+                                        setBio(bio);
+                                    });
+                            }}
                             textFieldColors={{
                                 neutral: {
                                     textColor:
@@ -164,7 +163,11 @@ export default function PaginaInicial() {
                                 borderRadius: "50%",
                                 marginBottom: "16px",
                             }}
-                            src={`https://github.com/${username}.png`}
+                            src={
+                                username.length > 2
+                                    ? `https://github.com/${username}.png`
+                                    : ``
+                            }
                         />
                         <Text
                             variant="body4"
@@ -177,6 +180,18 @@ export default function PaginaInicial() {
                             }}
                         >
                             {username}
+                        </Text>
+                        <Text
+                            variant="body4"
+                            styleSheet={{
+                                color: appConfig.theme.colors.neutrals[100],
+                                backgroundColor:
+                                    appConfig.theme.colors.primary[800],
+                                padding: "12px 10px",
+                                borderRadius: "10px",
+                            }}
+                        >
+                            {bio}
                         </Text>
                     </Box>
                     {/* Photo Area */}
